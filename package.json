@@ -1,10 +1,13 @@
 {
   "name": "@freact/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Fry",
   "license": "MIT",
   "description": "TODO",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "module": "dist/freact.es.js",
   "types": "dist/types/index.d.ts",
   "main": "dist/freact.umd.js",
