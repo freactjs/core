@@ -1,15 +1,9 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -23,7 +17,9 @@
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "strict": true,
-    "incremental": true
+    "incremental": true,
+    "declaration": true,
+    "outDir": "dist"
   },
   "include": [
     "**/*.ts",
