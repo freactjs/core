@@ -1,11 +1,23 @@
 {
   "name": "freact",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "module": "dist/freact.es.js",
+  "types": "dist/types/index.d.ts",
+  "main": "dist/freact.umd.js",
+  "unpkg": "dist/freact.iife.js",
+  "jsdelivr": "dist/freact.iife.js",
+  "exports": {
+    ".": {
+      "import": "./dist/freact.es.js",
+      "require": "./dist/freact.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc --emitDeclarationOnly && mv dist/src dist/types"
+    "build": "vite build && tsc --emitDeclarationOnly && mv dist/src dist/types",
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
     "@types/node": "^20.2.3",
