@@ -1,8 +1,9 @@
 {
-  "name": "freact",
+  "name": "@freact/core",
+  "version": "0.0.1",
   "author": "Fry",
   "license": "MIT",
-  "version": "0.0.1",
+  "description": "TODO",
   "type": "module",
   "module": "dist/freact.es.js",
   "types": "dist/types/index.d.ts",
@@ -18,7 +19,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc --emitDeclarationOnly && mv dist/src dist/types",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "release": "pnpm publish --access public"
   },
   "devDependencies": {
     "@types/node": "^20.2.3",
