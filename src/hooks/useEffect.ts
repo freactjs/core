@@ -1,8 +1,9 @@
 import { context } from "../context";
+import { EffectData } from "../types";
 
 export function useEffect(cb: () => any, deps?: any[]): void {
-  const data = context.data.effects;
-  const index = context.indicies[1];
+  const data = context.data as EffectData[];
+  const index = context.index;
 
   if (!Object.hasOwn(data, index)) {
     data[index] = {
@@ -10,6 +11,7 @@ export function useEffect(cb: () => any, deps?: any[]): void {
       cb: null,
       deps: deps ?? null
     };
+    context.fx.push(data[index]);
   } else {
     let areSame = !!data[index].deps && data[index].deps?.length === deps?.length;
     if (areSame) {
@@ -27,5 +29,5 @@ export function useEffect(cb: () => any, deps?: any[]): void {
     }
   }
 
-  context.indicies[1]++;
+  context.index++;
 }

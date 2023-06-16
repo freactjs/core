@@ -1,8 +1,9 @@
 import { context } from "../context";
+import { MemoData } from "../types";
 
 export function useMemo<T>(fn: () => T, deps: any[]): T {
-  const data = context.data.memo;
-  const index = context.indicies[3];
+  const data = context.data as MemoData[];
+  const index = context.index;
 
   if (!Object.hasOwn(data, index)) {
     data[index] = { val: fn(), deps };
@@ -23,6 +24,6 @@ export function useMemo<T>(fn: () => T, deps: any[]): T {
     }
   }
 
-  context.indicies[3]++;
+  context.index++;
   return data[index].val;
 }

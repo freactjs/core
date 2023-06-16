@@ -1,4 +1,4 @@
-import Freact, { createRoot } from '../src';
-import { App } from './App';
+import { h, createRoot } from '../src';
+import { App } from './components/App';
 
 createRoot('#root').render(<App />);

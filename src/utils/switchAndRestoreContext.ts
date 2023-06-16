@@ -1,18 +1,21 @@
-import { ComponentContext, HookData } from "../types";
+import { ComponentContext } from "../types";
 import { context } from "../context";
 
-export function switchAndRestoreContext(self: ComponentContext['self'], data: HookData, cb: () => void) {
+export function switchAndRestoreContext(compCtx: ComponentContext, cb: () => void) {
   const oldData = context.data;
-  const oldIndicies = context.indicies;
+  const oldIndex = context.index;
+  const oldFx = context.fx;
   const oldSelf = context.self;
 
-  context.self = self;
-  context.indicies = [0, 0, 0, 0, 0, 0];
-  context.data = data;
+  context.self = compCtx.self;
+  context.index = 0;
+  context.data = compCtx.hookData;
+  context.fx = compCtx.fx;
 
   cb();
 
   context.self = oldSelf;
-  context.indicies = oldIndicies as any;
+  context.index = oldIndex;
   context.data = oldData;
+  context.fx = oldFx;
 }

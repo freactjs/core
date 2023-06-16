@@ -1,4 +1,5 @@
 import { context } from "../context";
+import { StateData } from "../types";
 
 export type StateSetter<T> = (value: T | ((oldValue: T) => T)) => void;
 
@@ -6,8 +7,8 @@ export function useState<T>(initialValue: T | (() => T)): [T, StateSetter<T>] {
   if (!context.root || !context.self)
     throw new Error('Missing context data inside useState hook');
 
-  const data = context.data.state;
-  const index = context.indicies[0];
+  const data = context.data as StateData[];
+  const index = context.index;
   const root = context.root;
   const self = context.self;
 
@@ -29,6 +30,6 @@ export function useState<T>(initialValue: T | (() => T)): [T, StateSetter<T>] {
     };
   }
 
-  context.indicies[0]++;
+  context.index++;
   return [data[index].val, data[index].setter];
 }

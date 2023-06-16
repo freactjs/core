@@ -31,32 +31,41 @@ export interface FunctionalComponent<T = {}> {
   (props: PropsWithChildren<T>): FreactNode;
 }
 
-export interface HookData {
-  state: {
-    val: any;
-    setter: StateSetter<any>;
-  }[];
-  refs: { current: any; }[];
-  effects: {
-    cb: (() => any) | null;
-    effect: (() => any) | null;
-    deps: any[] | null;
-  }[];
-  memo: {
-    val: any;
-    deps: any[];
-  }[];
-  reducers: {
-    val: any;
-    dispatch: Dispatch<any>;
-  }[];
-  contexts: ProviderData[];
+export interface StateData {
+  val: any;
+  setter: StateSetter<any>;
 }
+
+export interface RefData {
+  current: any;
+}
+
+export interface EffectData {
+  cb: (() => any) | null;
+  effect: (() => any) | null;
+  deps: any[] | null;
+}
+
+export interface MemoData {
+  val: any;
+  deps: any[];
+}
+
+export interface ReducerData {
+  val: any;
+  dispatch: Dispatch<any>;
+}
+
+export type HookData = (
+  StateData | RefData | EffectData |
+  MemoData | ReducerData | ProviderData
+)[];
 
 export interface ComponentContext {
   prevTree: FreactNode;
   prevProps: { [K: string]: any; };
   hookData: HookData;
+  fx: EffectData[];
   self: { value: FreactElement; };
 }
 

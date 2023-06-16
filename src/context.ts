@@ -3,21 +3,16 @@ import { ComponentContext, HookData } from "./types";
 
 export interface GlobalContext {
   self: ComponentContext['self'] | null;
-  indicies: [number, number, number, number, number, number];
+  index: number;
   data: HookData;
+  fx: ComponentContext['fx'];
   root: Root | null;
 }
 
 export const context: GlobalContext = {
   self: null,
-  indicies: [0, 0, 0, 0, 0, 0],
-  data: {
-    state: [],
-    effects: [],
-    refs: [],
-    memo: [],
-    reducers: [],
-    contexts: []
-  },
+  index: 0,
+  data: [],
+  fx: [],
   root: null
 }

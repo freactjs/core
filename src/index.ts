@@ -8,10 +8,18 @@ export { useReducer } from "./hooks/useReducer";
 export { useRef } from "./hooks/useRef";
 export { useState } from "./hooks/useState";
 export { createRoot } from "./createRoot";
+export { h } from './createElement';
+export { Frygment } from './components/Frygment';
 export type { FC } from './types';
+export type { StateSetter } from './hooks/useState';
 
-import { h } from './createElement';
-import { Frygment } from "./components/Frygment";
-
-export default { h, Frygment };
-export { h, Frygment };
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [K: string]: {
+        [L: string]: any;
+        ref?: { current: Element | null; };
+      };
+    }
+  }
+}

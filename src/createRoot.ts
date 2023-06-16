@@ -1,4 +1,4 @@
-import { FreactElement, FreactFrygment, FreactNodeType, Ref, KeyType, FC, HookData } from "./types";
+import { FreactElement, FreactFrygment, FreactNodeType, Ref, KeyType, FC, ComponentContext } from "./types";
 import { detachDOMNodes } from "./utils/detachDOMNodes";
 import { getNodeKey } from "./utils/getNodeKey";
 import { updateAttribute } from "./utils/updateAttribute";
@@ -175,7 +175,7 @@ export class Root {
               );
             } else if (currType === FreactNodeType.COMPONENT) {
               this.#pending.delete(prevEl);
-              switchAndRestoreContext(prevEl.__context!.self, prevEl.__context!.hookData, () => {
+              switchAndRestoreContext(prevEl.__context!, () => {
                 const newElement = (currEl.type as FC)(currEl.props);
                 currEl.__domStart = domIndex.value;
                 currEl.__ref = domNode;
@@ -186,16 +186,12 @@ export class Root {
                   domNode, domIndex
                 );
 
-                currEl.__context = {
-                  prevTree: newElement,
-                  prevProps: currEl.props,
-                  hookData: context.data,
-                  self: context.self!
-                };
-                currEl.__context.self.value = currEl;
+                currEl.__context = prevEl.__context;
+                currEl.__context!.prevTree = newElement;
+                currEl.__context!.self.value = currEl;
                 currEl.__domEnd = domIndex.value;
 
-                executeEffects(currEl.__context);
+                executeEffects(currEl.__context!);
               });
             } else { // fragment
               currEl.__domStart = domIndex.value;
@@ -222,17 +218,15 @@ export class Root {
               this.#reconcile(h(currEl.type, {}), currEl, root);
               insertNodeAtPosition(domNode, root, domIndex.value++);
             } else if (currEl.type !== null) { // component
-              const newData: HookData = {
-                state: [],
-                effects: [],
-                refs: [],
-                memo: [],
-                reducers: [],
-                contexts: []
+              const newCtx: ComponentContext = {
+                hookData: [],
+                fx: [],
+                self: { value: currEl },
+                prevProps: currEl.props,
+                prevTree: null
               };
 
-              const self = { value: currEl };
-              switchAndRestoreContext(self, newData, () => {
+              switchAndRestoreContext(newCtx, () => {
                 const newElement = (currEl.type as FC)(currEl.props);
                 currEl.__domStart = domIndex.value;
                 currEl.__ref = domNode;
@@ -244,12 +238,9 @@ export class Root {
                 );
 
                 currEl.__domEnd = domIndex.value;
-                currEl.__context = {
-                  prevTree: newElement,
-                  prevProps: currEl.props,
-                  hookData: context.data,
-                  self
-                };
+                currEl.__context = newCtx;
+                newCtx.prevTree = newElement;
+
                 executeEffects(currEl.__context);
               });
             }
@@ -272,7 +263,7 @@ export class Root {
               domNode, domIndex
             );
 
-            for (const item of prevEl.__context!.hookData.effects) {
+            for (const item of prevEl.__context!.fx) {
               item.cb?.();
             }
           } else {

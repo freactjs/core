@@ -1,4 +1,5 @@
 import { context } from "../context";
+import { ReducerData } from "../types";
 
 type ReducerNoAction<S> = (state: S) => S;
 type ReducerNoActionState<R> = R extends ReducerNoAction<infer S> ? S : any;
@@ -35,8 +36,8 @@ export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: a
   if (!context.root || !context.self)
     throw new Error('Missing context data inside useReducer hook');
 
-  const data = context.data.reducers;
-  const index = context.indicies[4];
+  const data = context.data as ReducerData[];
+  const index = context.index;
   const root = context.root;
   const self = context.self;
 
@@ -53,6 +54,6 @@ export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: a
     };
   }
 
-  context.indicies[4]++;
+  context.index++;
   return [data[index].val, data[index].dispatch];
 }

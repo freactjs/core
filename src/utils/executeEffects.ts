@@ -1,7 +1,7 @@
 import { ComponentContext } from "../types";
 
 export function executeEffects(ctx: ComponentContext) {
-  for (const item of ctx.hookData.effects) {
+  for (const item of ctx.fx) {
     if (!item.effect) continue;
     item.cb?.();
 
