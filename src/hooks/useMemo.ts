@@ -11,7 +11,7 @@ export function useMemo<T>(fn: () => T, deps: any[]): T {
     let areSame = data[index].deps.length === deps.length;
     if (areSame) {
       for (let i = 0; i < deps!.length; i++) {
-        if (data[index].deps[i] !== deps[i]) {
+        if (!Object.is(data[index].deps[i], deps[i])) {
           areSame = false;
           break;
         }

@@ -16,7 +16,7 @@ export function useEffect(cb: () => any, deps?: any[]): void {
     let areSame = !!data[index].deps && data[index].deps?.length === deps?.length;
     if (areSame) {
       for (let i = 0; i < deps!.length; i++) {
-        if (data[index].deps![i] !== deps![i]) {
+        if (!Object.is(data[index].deps![i], deps![i])) {
           areSame = false;
           break;
         }

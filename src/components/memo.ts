@@ -15,14 +15,14 @@ const defaultMemoComparator: MemoComparatorType = (oldProps, newProps) => {
       return false;
 
     for (let i = 0; i < newProps.children.length; i++) {
-      if (newProps.children[i] !== oldProps.children[i])
+      if (!Object.is(newProps.children[i], oldProps.children[i]))
         return false;
     }
   }
 
   for (const key of newKeys) {
     if (key === 'children') continue;
-    if (oldProps[key] !== newProps[key])
+    if (!Object.is(oldProps[key], newProps[key]))
       return false;
   }
 
