@@ -1,4 +1,4 @@
-import { h, FC } from "../../src";
+import { h, FC } from '@/index';
 import { TodoItemType } from "../typeDefs";
 import { TodoItem } from "./TodoItem";
 

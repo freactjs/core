@@ -1,4 +1,4 @@
-import { h, Frygment, FC } from '../../src';
+import { h, Frygment, FC } from '@/index';
 import { Footer } from './Footer';
 import { TodoBox } from './TodoBox';
 

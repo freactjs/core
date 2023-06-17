@@ -1,4 +1,4 @@
-import { h, FC } from "../../src";
+import { h, FC } from '@/index';
 
 export const Footer: FC = () => {
   return (

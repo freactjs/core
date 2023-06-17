@@ -19,7 +19,11 @@
     "strict": true,
     "incremental": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    }
   },
   "include": [
     "**/*.ts",

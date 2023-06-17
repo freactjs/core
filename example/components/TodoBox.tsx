@@ -1,4 +1,4 @@
-import { h, Frygment, FC, useCallback, useEffect, useMemo, useState } from "../../src";
+import { h, Frygment, FC, useCallback, useEffect, useMemo, useState } from '@/index';
 import { ControlBar } from "./ControlBar";
 import { TodoList } from "./TodoList";
 import { TodoHeader } from "./TodoHeader";
