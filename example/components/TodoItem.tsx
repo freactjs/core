@@ -1,4 +1,4 @@
-import { h, FC, useEffect, useRef, useState } from '@/index';
+import { FC, useEffect, useRef, useState } from '@/index';
 import { TodoItemType } from "../typeDefs";
 
 export const TodoItem: FC<{

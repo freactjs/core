@@ -1,4 +1,4 @@
-import { h, FC, StateSetter } from '@/index';
+import { FC, StateSetter } from '@/index';
 import { FilterType } from "../typeDefs";
 
 export const ControlBar: FC<{

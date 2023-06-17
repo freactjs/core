@@ -1,4 +1,4 @@
-import { h, FC } from '@/index';
+import { FC } from '@/index';
 
 export const Footer: FC = () => {
   return (

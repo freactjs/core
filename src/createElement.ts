@@ -1,4 +1,4 @@
-import { Frygment } from "./components/Frygment";
+import { Fragment } from "./components/Fragment";
 import { FreactElement, FreactNode } from "./types";
 
 export function h(
@@ -11,7 +11,7 @@ export function h(
   const key = props?.key;
   delete props?.key;
 
-  if (type === Frygment) {
+  if (type === Fragment) {
     if (hasKey) (children as any).key = key;
     return children as any;
   }

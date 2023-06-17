@@ -18,7 +18,7 @@ export type FreactNode = FreactChild | FreactFrygment | boolean | null | undefin
 
 export type KeyType = bigint | boolean | number | string | symbol | object;
 
-type PropsWithChildren<T> = T & {
+export type PropsWithChildren<T> = T & {
   children?: FreactNode[];
   key?: KeyType;
 };

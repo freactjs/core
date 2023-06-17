@@ -3,6 +3,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   resolve: {
+    extensions: ['.ts', '.tsx'],
     alias: {
       '@': resolve('./src')
     }

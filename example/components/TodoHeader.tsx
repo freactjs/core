@@ -1,4 +1,4 @@
-import { h, FC, useState } from '@/index';
+import { FC, useState } from '@/index';
 
 export const TodoHeader: FC<{ onSubmit?: (text: string) => any }> = ({ onSubmit }) => {
   const [input, setInput] = useState('');
