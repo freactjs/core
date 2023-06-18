@@ -1,5 +1,6 @@
 import { FreactElement, PropsWithChildren } from "./types";
-import { Fragment } from "./components/Fragment";
+
+export const Fragment = Symbol.for('freact.fragment');
 
 export function jsx(type: FreactElement['type'], props: PropsWithChildren<{ [K: string]: any; }>, key: any): FreactElement {
   const hasKey = typeof key !== 'undefined';
@@ -25,4 +26,3 @@ export function jsx(type: FreactElement['type'], props: PropsWithChildren<{ [K: 
   return res;
 }
 
-export { Fragment } from './components/Fragment';

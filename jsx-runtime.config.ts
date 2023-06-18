@@ -10,15 +10,17 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+    emptyOutDir: false,
     rollupOptions: {
       input: {
-        freact: resolve(__dirname, 'src/index.ts')
+        'jsx-runtime': resolve(__dirname, 'src/jsx-runtime.ts'),
+        'jsx-dev-runtime': resolve(__dirname, 'src/jsx-dev-runtime.ts')
       }
     },
     lib: {
       entry: '',
       name: 'Freact',
-      formats: ['es', 'umd', 'iife'],
+      formats: ['es'],
       fileName: (format, name) => `${name}.${format}.js`
     }
   }

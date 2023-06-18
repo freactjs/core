@@ -1,4 +1,4 @@
-import { Fragment } from "./components/Fragment";
+import { Fragment } from "./index";
 import { FreactElement, FreactNode } from "./types";
 
 export function h(

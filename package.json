@@ -1,6 +1,6 @@
 {
   "name": "@freact/core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Fry",
   "license": "MIT",
   "description": "TODO",
@@ -17,11 +17,13 @@
     ".": {
       "import": "./dist/freact.es.js",
       "require": "./dist/freact.umd.js"
-    }
+    },
+    "./jsx-runtime": "./dist/jsx-runtime.es.js",
+    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.es.js"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc --emitDeclarationOnly && mv dist/src dist/types",
+    "build": "vite build && vite build -c jsx-runtime.config.ts && tsc --emitDeclarationOnly && mv dist/src dist/types",
     "prepublishOnly": "pnpm build",
     "release": "pnpm publish --access public"
   },
