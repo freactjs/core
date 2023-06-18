@@ -16,16 +16,23 @@
   "exports": {
     ".": {
       "import": "./dist/freact.es.js",
-      "require": "./dist/freact.umd.js"
+      "require": "./dist/freact.umd.js",
+      "types": "./dist/types/index.d.ts"
     },
-    "./jsx-runtime": "./dist/jsx-runtime.es.js",
-    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.es.js"
+    "./jsx-runtime": {
+      "import": "./dist/jsx-runtime.es.js",
+      "types": "./dist/types/jsx-runtime.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./dist/jsx-dev-runtime.es.js",
+      "types": "./dist/types/jsx-dev-runtime.d.ts"
+    }
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build && vite build -c jsx-runtime.config.ts && tsc --emitDeclarationOnly && mv dist/src dist/types",
     "prepublishOnly": "pnpm build",
-    "release": "pnpm publish --access public"
+    "release": "pnpm publish --no-git-checks --access public"
   },
   "devDependencies": {
     "@types/node": "^20.2.3",
