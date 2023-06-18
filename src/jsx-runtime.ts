@@ -26,3 +26,4 @@ export function jsx(type: FreactElement['type'], props: PropsWithChildren<{ [K: 
   return res;
 }
 
+export { jsx as jsxs };
