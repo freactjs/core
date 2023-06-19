@@ -1,7 +1,9 @@
+import { Fragment, h } from ".";
 import { context } from "./context";
+import { useContext } from "./hooks/useContext";
 import { useEffect } from "./hooks/useEffect";
 import { useRef } from "./hooks/useRef";
-import { FC, FreactElement } from "./types";
+import { FC, FreactElement, FreactNode } from "./types";
 
 export type ContextValue<C> = C extends Context<infer V> ? V : any;
 
@@ -25,7 +27,7 @@ export class Context<T> {
     });
   }
 
-  Provider: FC<{ value: T; }> = ({ value, children }) => {
+  Provider: FC<{ value: T, children: FreactNode }> = ({ value, children }) => {
     const provData = useRef<ProviderData>({ val: value, subs: new Set() });
 
     if (provData.current.val !== value) {
@@ -45,8 +47,13 @@ export class Context<T> {
       contextData.set(this, prev);
     });
 
-    return children;
+    return h(Fragment, null, children);
   };
+
+  Consumer: FC<{ children: (data: T) => FreactNode }> = ({ children }) => {
+    const data = useContext(this);
+    return h(Fragment, null, children(data));
+  }
 }
 
 export function createContext<T>(defaultValue?: T): Context<T> {

@@ -1,8 +1,8 @@
-import { FreactElement, FreactFrygment, FreactNode, FreactNodeType } from "../types";
+import { FreactElement, FreactFragment, FreactNode, FreactNodeType } from "../types";
 import { getNodeType } from "./getNodeType";
 
 export function* traverseDOMNodes(
-  node: FreactElement | FreactFrygment,
+  node: FreactElement | FreactFragment,
   domNode: Element
 ): Generator<Node, void, any> {
   let children: FreactNode[];

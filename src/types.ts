@@ -2,7 +2,12 @@ import { ProviderData } from "./createContext";
 import { Dispatch } from "./hooks/useReducer";
 import { StateSetter } from "./hooks/useState";
 
-export type FC<T = {}> = FunctionalComponent<T>;
+export interface PropsNoKey {
+  [K: string]: any;
+  key?: never;
+}
+
+export type FC<T extends PropsNoKey = {}> = FunctionalComponent<T>;
 
 type FreactText = string | number;
 type FreactChild = FreactElement | FreactText;
@@ -13,8 +18,8 @@ interface FreactNodeProps {
   __domEnd?: number;
 }
 
-export type FreactFrygment = (FreactNode[] & FreactNodeProps);
-export type FreactNode = FreactChild | FreactFrygment | boolean | null | undefined;
+export type FreactFragment = (FreactNode[] & FreactNodeProps);
+export type FreactNode = FreactChild | FreactFragment | boolean | null | undefined;
 
 export type KeyType = bigint | boolean | number | string | symbol | object;
 
@@ -24,11 +29,11 @@ export type PropsWithChildren<T> = T & {
 };
 
 export interface Ref<T> {
-  current: T extends Element ? (T | null) : T;
+  current: T extends HTMLElement ? (T | null) : T;
 }
 
-export interface FunctionalComponent<T = {}> {
-  (props: PropsWithChildren<T>): FreactNode;
+export interface FunctionalComponent<T extends PropsNoKey = {}> {
+  (props: T): FreactElement;
 }
 
 export interface StateData {

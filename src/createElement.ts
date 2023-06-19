@@ -20,7 +20,7 @@ export function h(
     type,
     props: {
       ...props,
-      children: children
+      children
     }
   };
 

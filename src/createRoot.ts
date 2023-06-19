@@ -1,4 +1,4 @@
-import { FreactElement, FreactFrygment, FreactNodeType, Ref, KeyType, FC, ComponentContext } from "./types";
+import { FreactElement, FreactFragment, FreactNodeType, Ref, KeyType, FC, ComponentContext } from "./types";
 import { detachDOMNodes } from "./utils/detachDOMNodes";
 import { getNodeKey } from "./utils/getNodeKey";
 import { updateAttribute } from "./utils/updateAttribute";
@@ -85,7 +85,7 @@ export class Root {
     }
 
     const childCount = Math.max(curr.props.children.length, prev.props.children.length);
-    const keyNodeMap = new Map<KeyType, [FreactElement | FreactFrygment, Node[]]>();
+    const keyNodeMap = new Map<KeyType, [FreactElement | FreactFragment, Node[]]>();
     const domIndex = parentDomIndex ?? { value: 0 };
 
     // detach keyed nodes
@@ -175,6 +175,11 @@ export class Root {
               );
             } else if (currType === FreactNodeType.COMPONENT) {
               this.#pending.delete(prevEl);
+
+              if (currEl.props.children && currEl.props.children.length === 1) {
+                currEl.props.children = currEl.props.children[0] as any;
+              }
+
               switchAndRestoreContext(prevEl.__context!, () => {
                 const newElement = (currEl.type as FC)(currEl.props);
                 currEl.__domStart = domIndex.value;
@@ -225,6 +230,10 @@ export class Root {
                 prevProps: currEl.props,
                 prevTree: null
               };
+
+              if (currEl.props.children && currEl.props.children.length === 1) {
+                currEl.props.children = currEl.props.children[0] as any;
+              }
 
               switchAndRestoreContext(newCtx, () => {
                 const newElement = (currEl.type as FC)(currEl.props);

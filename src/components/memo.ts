@@ -1,4 +1,4 @@
-import { FC, MemoComparatorType } from "../types";
+import { FC, MemoComparatorType, PropsNoKey } from "../types";
 import { h } from "../createElement";
 import { useMemo } from "../hooks/useMemo";
 import { context } from "../context";
@@ -29,7 +29,7 @@ const defaultMemoComparator: MemoComparatorType = (oldProps, newProps) => {
   return true;
 };
 
-export function memo<T>(
+export function memo<T extends PropsNoKey> (
   component: FC<T>,
   arePropsEqual: MemoComparatorType = defaultMemoComparator
 ): FC<T> {
