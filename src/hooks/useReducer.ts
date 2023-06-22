@@ -37,14 +37,17 @@ export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: a
     throw new Error('Missing context data inside useReducer hook');
 
   const data = context.data as ReducerData[];
-  const index = context.index;
+  const index = context.index++;
   const root = context.root;
   const self = context.self;
 
   if (!Object.hasOwn(data, index)) {
     const dispatch: Dispatch<any> = (action) => {
-      data[index].val = reducer(data[index].val, action);
-      root.__internalAddPening(self.value);
+      const newVal = reducer(data[index].val, action);
+      if (Object.is(newVal, data[index].val)) return;
+
+      data[index].val = newVal;
+      root.__internalAddPending(self);
       root.__internalUpdate();
     };
 
@@ -54,6 +57,5 @@ export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: a
     };
   }
 
-  context.index++;
   return [data[index].val, data[index].dispatch];
 }

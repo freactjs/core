@@ -1,4 +1,5 @@
 import { FreactElement, KeyType } from "./types";
+import { Ref } from "./hooks/useRef";
 
 export { memo } from "./components/memo";
 export { createContext } from "./createContext";
@@ -12,7 +13,9 @@ export { useState } from "./hooks/useState";
 export { createRoot } from "./createRoot";
 export { h } from './createElement';
 
-export type { FC, FunctionalComponent, FreactNode, FreactElement, Ref } from './types';
+export type { FC, FunctionalComponent, FreactNode, FreactElement } from './types';
+export type { Ref, MutableRef } from './hooks/useRef';
+export type { Dispatch } from './hooks/useReducer';
 export type { StateSetter } from './hooks/useState';
 
 export const Fragment = Symbol.for('freact.fragment');
@@ -24,7 +27,7 @@ declare global {
     interface IntrinsicElements {
       [K: string]: {
         [L: string]: any;
-        ref?: { current: HTMLElement | null; };
+        ref?: Ref<HTMLElement>;
         key?: KeyType;
       };
     }

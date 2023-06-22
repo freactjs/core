@@ -33,7 +33,7 @@ export class Context<T> {
     if (provData.current.val !== value) {
       provData.current.val = value;
       provData.current.subs.forEach(x => {
-        context.root?.__internalAddPening(x.value);
+        context.root?.__internalAddPending(x);
       });
     }
 

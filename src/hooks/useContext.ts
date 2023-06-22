@@ -7,7 +7,7 @@ export function useContext<C extends Context<any>>(ctx: C): ContextValue<C> {
     throw new Error('Missing context data inside useContext hook');
 
   const data = context.data as ProviderData[];
-  const index = context.index;
+  const index = context.index++;
   const self = context.self;
 
   if (!Object.hasOwn(data, index)) {
@@ -19,6 +19,5 @@ export function useContext<C extends Context<any>>(ctx: C): ContextValue<C> {
     return () => data[index].subs.delete(self);
   }, []);
 
-  context.index++;
   return data[index].val;
 }

@@ -1,5 +1,6 @@
 import { ProviderData } from "./createContext";
 import { Dispatch } from "./hooks/useReducer";
+import { MutableRef } from "./hooks/useRef";
 import { StateSetter } from "./hooks/useState";
 
 export interface PropsNoKey {
@@ -28,10 +29,6 @@ export type PropsWithChildren<T> = T & {
   key?: KeyType;
 };
 
-export interface Ref<T> {
-  current: T extends HTMLElement ? (T | null) : T;
-}
-
 export interface FunctionalComponent<T extends PropsNoKey = {}> {
   (props: T): FreactElement;
 }
@@ -39,10 +36,6 @@ export interface FunctionalComponent<T extends PropsNoKey = {}> {
 export interface StateData {
   val: any;
   setter: StateSetter<any>;
-}
-
-export interface RefData {
-  current: any;
 }
 
 export interface EffectData {
@@ -62,7 +55,7 @@ export interface ReducerData {
 }
 
 export type HookData = (
-  StateData | RefData | EffectData |
+  StateData | MutableRef<any> | EffectData |
   MemoData | ReducerData | ProviderData
 )[];
 

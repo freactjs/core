@@ -1,4 +1,4 @@
-import { FreactElement, FreactFragment, FreactNodeType, Ref, KeyType, FC, ComponentContext } from "./types";
+import { FreactElement, FreactFragment, FreactNodeType, KeyType, FC, ComponentContext } from "./types";
 import { detachDOMNodes } from "./utils/detachDOMNodes";
 import { getNodeKey } from "./utils/getNodeKey";
 import { updateAttribute } from "./utils/updateAttribute";
@@ -8,11 +8,11 @@ import { h } from "./createElement";
 import { getNodeType } from "./utils/getNodeType";
 import { switchAndRestoreContext } from "./utils/switchAndRestoreContext";
 import { executeEffects } from "./utils/executeEffects";
-import { contextData } from "./createContext";
+import { MutableRef } from "./hooks/useRef";
 
 export class Root {
   #rootEl: Element;
-  #pending = new Set<FreactElement>();
+  #pending = new Set<{ value: FreactElement }>();
   #isEnqueued: boolean = false;
 
   constructor(rootEl: Element) {
@@ -32,11 +32,11 @@ export class Root {
 
       if (attr === 'ref') {
         if (Object.hasOwn(prev.props, attr)) {
-          (prev.props[attr] as Ref<any>).current = null;
+          (prev.props[attr] as MutableRef<any>).current = null;
         }
 
         if (Object.hasOwn(curr.props, attr)) {
-          (curr.props[attr] as Ref<any>).current = domNode;
+          (curr.props[attr] as MutableRef<any>).current = domNode;
         }
 
         continue;
@@ -174,7 +174,7 @@ export class Root {
                 root
               );
             } else if (currType === FreactNodeType.COMPONENT) {
-              this.#pending.delete(prevEl);
+              this.#pending.delete(prevEl.__context!.self);
 
               if (currEl.props.children && currEl.props.children.length === 1) {
                 currEl.props.children = currEl.props.children[0] as any;
@@ -264,7 +264,7 @@ export class Root {
               domNode, domIndex
             );
           } else if (prevType === FreactNodeType.COMPONENT) {
-            this.#pending.delete(prevEl);
+            this.#pending.delete(prevEl.__context!.self);
 
             this.#reconcile(
               h(null, null, prevEl.__context?.prevTree),
@@ -299,7 +299,7 @@ export class Root {
     }
   }
 
-  __internalAddPening(component: FreactElement) {
+  __internalAddPending(component: { value: FreactElement }) {
     this.#pending.add(component);
   }
 
@@ -311,17 +311,15 @@ export class Root {
       context.root = this;
 
       for (const item of this.#pending) {
-        const rootIndex = { value: item.__domStart! };
-        contextData.clear();
+        const rootIndex = { value: item.value.__domStart! };
+        this.#pending.delete(item);
 
         this.#reconcile(
-          h(null, null, item),
-          h(null, null, { ...item }),
-          item.__ref!,
+          h(null, null, item.value),
+          h(null, null, { ...item.value }),
+          item.value.__ref!,
           rootIndex
         );
-
-        this.#pending.delete(item);
       }
 
       this.#isEnqueued = false;

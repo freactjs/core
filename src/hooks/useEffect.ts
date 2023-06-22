@@ -3,7 +3,7 @@ import { EffectData } from "../types";
 
 export function useEffect(cb: () => any, deps?: any[]): void {
   const data = context.data as EffectData[];
-  const index = context.index;
+  const index = context.index++;
 
   if (!Object.hasOwn(data, index)) {
     data[index] = {
@@ -28,6 +28,4 @@ export function useEffect(cb: () => any, deps?: any[]): void {
       data[index].deps = deps ?? null;
     }
   }
-
-  context.index++;
 }
