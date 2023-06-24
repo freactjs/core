@@ -74,7 +74,7 @@ export interface FreactElement extends FreactNodeProps {
     [K: string]: any;
   };
   __context?: ComponentContext;
-  __ref?: Element;
+  __ref?: HTMLElement;
 }
 
 export type MemoComparatorType = (

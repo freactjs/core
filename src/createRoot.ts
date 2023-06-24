@@ -1,4 +1,4 @@
-import { FreactElement, FreactFragment, FreactNodeType, KeyType, FC, ComponentContext } from "./types";
+import { FreactElement, FreactNodeType, KeyType, FC, ComponentContext, FreactNode } from "./types";
 import { detachDOMNodes } from "./utils/detachDOMNodes";
 import { getNodeKey } from "./utils/getNodeKey";
 import { updateAttribute } from "./utils/updateAttribute";
@@ -11,11 +11,11 @@ import { executeEffects } from "./utils/executeEffects";
 import { MutableRef } from "./hooks/useRef";
 
 export class Root {
-  #rootEl: Element;
+  #rootEl: HTMLElement;
   #pending = new Set<{ value: FreactElement }>();
   #isEnqueued: boolean = false;
 
-  constructor(rootEl: Element) {
+  constructor(rootEl: HTMLElement) {
     this.#rootEl = rootEl;
     rootEl.innerHTML = '';
   }
@@ -23,7 +23,7 @@ export class Root {
   #reconcile(
     prev: FreactElement,
     curr: FreactElement,
-    domNode: Element,
+    domNode: HTMLElement,
     parentDomIndex?: { value: number; }
   ) {
     const attrs = new Set([...Object.keys(curr.props), ...Object.keys(prev.props)]);
@@ -85,7 +85,7 @@ export class Root {
     }
 
     const childCount = Math.max(curr.props.children.length, prev.props.children.length);
-    const keyNodeMap = new Map<KeyType, [FreactElement | FreactFragment, Node[]]>();
+    const keyNodeMap = new Map<KeyType, [FreactNode, Node[]]>();
     const domIndex = parentDomIndex ?? { value: 0 };
 
     // detach keyed nodes
@@ -124,8 +124,8 @@ export class Root {
         prev.props.children[i] = keyEl;
         prevNode = keyEl;
 
-        for (let i = 0; i < keyNodes.length; i++) {
-          insertNodeAtPosition(domNode, keyNodes[i], domIndex.value + i);
+        for (let j = 0; j < keyNodes.length; j++) {
+          insertNodeAtPosition(domNode, keyNodes[j], domIndex.value + j);
         }
       }
 
@@ -153,7 +153,7 @@ export class Root {
               domNode, domIndex
             );
           } else {
-            if (currNode === prevNode) { // skip memoized
+            if (Object.is(currNode, prevNode)) { // skip memoized
               if (currType === FreactNodeType.COMPONENT || currType === FreactNodeType.FRAGMENT) {
                 domIndex.value = currEl.__domEnd!;
               } else {
@@ -166,7 +166,7 @@ export class Root {
             if (currType === FreactNodeType.LITERAL) {
               domNode.childNodes[domIndex.value++].textContent = `${currNode}`;
             } else if (currType === FreactNodeType.ELEMENT) {
-              const root = domNode.childNodes[domIndex.value++] as Element;
+              const root = domNode.childNodes[domIndex.value++] as HTMLElement;
 
               this.#reconcile(
                 prevEl,
@@ -281,7 +281,7 @@ export class Root {
                 this.#reconcile(
                   prevEl,
                   h(null, null),
-                  domNode.childNodes[domIndex.value] as Element
+                  domNode.childNodes[domIndex.value] as HTMLElement
                 );
               }
 
@@ -337,7 +337,7 @@ export class Root {
 }
 
 export function createRoot(rootSelector: string) {
-  const rootEl = document.querySelector(rootSelector);
+  const rootEl = document.querySelector<HTMLElement>(rootSelector);
   if (!rootEl) throw new Error("Root element doesn't exist");
   return new Root(rootEl);
 }
