@@ -1,5 +1,4 @@
 import { FreactElement, FreactNodeType, KeyType, FC, ComponentContext, FreactNode } from "./types";
-import { detachDOMNodes } from "./utils/detachDOMNodes";
 import { getNodeKey } from "./utils/getNodeKey";
 import { updateAttribute } from "./utils/updateAttribute";
 import { context } from "./context";
@@ -88,17 +87,33 @@ export class Root {
     const keyNodeMap = new Map<KeyType, [FreactNode, Node[]]>();
     const domIndex = parentDomIndex ?? { value: 0 };
 
-    // detach keyed nodes
-    for (let i = childCount - 1; i >= 0; i--) {
-      const currEl = curr.props.children[i] as FreactElement;
-      const prevEl = prev.props.children[i] as FreactElement;
+    // find keyed nodes
+    let index = domIndex.value;
+    for (let i = 0; i < prev.props.children.length; i++) {
+      const prevNode = prev.props.children[i];
+      const currNode = curr.props.children[i];
 
-      const currKey = getNodeKey(currEl);
-      const prevKey = getNodeKey(prevEl);
+      const prevKey = getNodeKey(prevNode);
+      const currKey = getNodeKey(currNode);
+      const prevType = getNodeType(prevNode);
+
+      const oldIdx = index;
+      index = prevType === FreactNodeType.FRAGMENT || prevType === FreactNodeType.COMPONENT
+        ? (prevNode as FreactElement).__domEnd! : index + 1;
 
       if (prevKey === null || prevKey === currKey) continue;
-      keyNodeMap.set(prevKey, [prevEl, detachDOMNodes(prevEl, domNode)]);
+
+      const nodes: Node[] = [];
+      for (let i = oldIdx; i < index; i++)
+        nodes.push(domNode.childNodes[i]);
+
+      keyNodeMap.set(prevKey, [prevNode, nodes]);
       prev.props.children[i] = undefined;
+    }
+
+    // detach keyed nodes
+    for (const [_, [__, nodes]] of keyNodeMap) {
+      for (const node of nodes) domNode.removeChild(node);
     }
 
     for (let i = 0; i < childCount; i++) {
@@ -205,6 +220,7 @@ export class Root {
                 h(null, null, ...(currNode as [])),
                 domNode, domIndex
               );
+              currEl.__domEnd = domIndex.value;
             }
           }
         } else { // vnode created
@@ -217,6 +233,7 @@ export class Root {
               h(null, null, ...(currNode as [])),
               domNode, domIndex
             );
+            currEl.__domEnd = domIndex.value;
           } else {
             if (typeof currEl.type === 'string') { // element
               const root = document.createElement(currEl.type);

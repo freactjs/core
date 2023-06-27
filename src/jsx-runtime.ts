@@ -1,6 +1,6 @@
-import { FreactElement, PropsWithChildren } from "./types";
+import { FC, FreactElement, FreactNode, PropsWithChildren } from "./types";
 
-export const Fragment = Symbol.for('freact.fragment');
+export const Fragment = Symbol.for('freact.fragment') as any as FC<{ children: FreactNode }>;
 
 export function jsx(type: FreactElement['type'], props: PropsWithChildren<{ [K: string]: any; }>, key: any): FreactElement {
   const hasKey = typeof key !== 'undefined';

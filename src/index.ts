@@ -1,4 +1,4 @@
-import { FreactElement, KeyType } from "./types";
+import { FC, FreactElement, FreactNode, KeyType } from "./types";
 import { Ref } from "./hooks/useRef";
 
 export { memo } from "./components/memo";
@@ -18,7 +18,7 @@ export type { Ref, MutableRef } from './hooks/useRef';
 export type { Dispatch } from './hooks/useReducer';
 export type { StateSetter } from './hooks/useState';
 
-export const Fragment = Symbol.for('freact.fragment');
+export const Fragment = Symbol.for('freact.fragment') as any as FC<{ children: FreactNode }>;
 
 declare global {
   namespace JSX {
