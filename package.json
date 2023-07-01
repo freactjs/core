@@ -1,6 +1,6 @@
 {
   "name": "@freact/core",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Fry",
   "license": "MIT",
   "description": "TODO",
@@ -21,21 +21,24 @@
     },
     "./jsx-runtime": {
       "import": "./dist/jsx-runtime.es.js",
+      "require": "./dist/jsx-runtime.umd.js",
       "types": "./dist/types/jsx-runtime.d.ts"
     },
     "./jsx-dev-runtime": {
       "import": "./dist/jsx-dev-runtime.es.js",
+      "require": "./dist/jsx-dev-runtime.umd.js",
       "types": "./dist/types/jsx-dev-runtime.d.ts"
     }
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build -c jsx-runtime.config.ts && tsc --emitDeclarationOnly && mv dist/src dist/types",
+    "build": "vite build && vite build -c jsx-runtime.config.ts && vite build -c jsx-dev-runtime.config.ts && tsc --emitDeclarationOnly && rimraf -g dist/example dist/*.config.d.ts && mv dist/src dist/types",
     "prepublishOnly": "pnpm build",
     "release": "pnpm publish --no-git-checks --access public"
   },
   "devDependencies": {
     "@types/node": "^20.2.3",
+    "rimraf": "^5.0.1",
     "terser": "^5.17.5",
     "typescript": "^5.0.2",
     "vite": "^4.3.2"

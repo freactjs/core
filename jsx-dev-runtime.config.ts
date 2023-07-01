@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        'jsx-runtime': resolve(__dirname, 'src/jsx-runtime.ts')
+        'jsx-dev-runtime': resolve(__dirname, 'src/jsx-dev-runtime.ts')
       }
     },
     lib: {
