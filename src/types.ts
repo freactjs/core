@@ -68,9 +68,9 @@ export interface ComponentContext {
 }
 
 export interface FreactElement extends FreactNodeProps {
-  type: string | FC<any> | symbol | null;
+  type: string | FC<any>;
   props: {
-    children: FreactNode[];
+    children?: FreactNode;
     [K: string]: any;
   };
   __context?: ComponentContext;

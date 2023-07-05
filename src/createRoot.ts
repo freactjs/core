@@ -8,6 +8,7 @@ import { getNodeType } from "./utils/getNodeType";
 import { switchAndRestoreContext } from "./utils/switchAndRestoreContext";
 import { executeEffects } from "./utils/executeEffects";
 import { MutableRef } from "./hooks/useRef";
+import { getChildrenArray } from "./utils/getChildrenArray";
 
 export class Root {
   #rootEl: HTMLElement;
@@ -83,15 +84,18 @@ export class Root {
       }
     }
 
-    const childCount = Math.max(curr.props.children.length, prev.props.children.length);
+    const prevChildren = getChildrenArray(prev);
+    const currChildren = getChildrenArray(curr);
+
+    const childCount = Math.max(prevChildren.length, currChildren.length);
     const keyNodeMap = new Map<KeyType, [FreactNode, Node[]]>();
     const domIndex = parentDomIndex ?? { value: 0 };
 
     // find keyed nodes
     let index = domIndex.value;
-    for (let i = 0; i < prev.props.children.length; i++) {
-      const prevNode = prev.props.children[i];
-      const currNode = curr.props.children[i];
+    for (let i = 0; i < prevChildren.length; i++) {
+      const prevNode = prevChildren[i];
+      const currNode = currChildren[i];
 
       const prevKey = getNodeKey(prevNode);
       const currKey = getNodeKey(currNode);
@@ -108,7 +112,7 @@ export class Root {
         nodes.push(domNode.childNodes[i]);
 
       keyNodeMap.set(prevKey, [prevNode, nodes]);
-      prev.props.children[i] = undefined;
+      prevChildren[i] = undefined;
     }
 
     // detach keyed nodes
@@ -117,8 +121,8 @@ export class Root {
     }
 
     for (let i = 0; i < childCount; i++) {
-      const currNode = curr.props.children[i];
-      let prevNode = prev.props.children[i];
+      const currNode = currChildren[i];
+      let prevNode = prevChildren[i];
 
       const prevKey = getNodeKey(prevNode);
       const currKey = getNodeKey(currNode);
@@ -136,7 +140,7 @@ export class Root {
           );
         }
 
-        prev.props.children[i] = keyEl;
+        prevChildren[i] = keyEl;
         prevNode = keyEl;
 
         for (let j = 0; j < keyNodes.length; j++) {
@@ -191,10 +195,6 @@ export class Root {
             } else if (currType === FreactNodeType.COMPONENT) {
               this.#pending.delete(prevEl.__context!.self);
 
-              if (currEl.props.children && currEl.props.children.length === 1) {
-                currEl.props.children = currEl.props.children[0] as any;
-              }
-
               switchAndRestoreContext(prevEl.__context!, () => {
                 const newElement = (currEl.type as FC)(currEl.props);
                 currEl.__domStart = domIndex.value;
@@ -248,10 +248,6 @@ export class Root {
                 prevTree: null
               };
 
-              if (currEl.props.children && currEl.props.children.length === 1) {
-                currEl.props.children = currEl.props.children[0] as any;
-              }
-
               switchAndRestoreContext(newCtx, () => {
                 const newElement = (currEl.type as FC)(currEl.props);
                 currEl.__domStart = domIndex.value;
@@ -294,7 +290,7 @@ export class Root {
             }
           } else {
             if (prevType === FreactNodeType.ELEMENT) {
-              if (prevEl.props.children.length > 0) {
+              if (prevChildren.length > 0) {
                 this.#reconcile(
                   prevEl,
                   h(null, null),
