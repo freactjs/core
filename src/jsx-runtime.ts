@@ -6,7 +6,7 @@ export function jsx(type: FreactElement['type'], props: PropsWithChildren<{ [K: 
   const hasKey = typeof key !== 'undefined';
 
   if (type === Fragment) {
-    if (!props.children) return undefined as any;
+    if (!Object.hasOwn(props, 'children')) return undefined as any;
     const children = Array.isArray(props.children)
       ? props.children
       : [props.children];
