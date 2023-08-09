@@ -307,7 +307,7 @@ export class Root {
             this.#pending.delete(prevEl.__context!.self);
 
             this.#reconcile(
-              h(null, null, prevEl.__context?.prevTree),
+              h(null, null, prevEl.__context!.prevTree),
               h(null, null, currNode),
               domNode, domIndex
             );

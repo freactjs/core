@@ -14,7 +14,7 @@ type FreactText = string | number;
 type FreactChild = FreactElement | FreactText;
 
 interface FreactNodeProps {
-  key?: any;
+  key?: unknown;
   __domStart?: number;
   __domEnd?: number;
   __vnode?: FreactElement;

@@ -12,18 +12,23 @@ export function reinstantiate<T extends FreactNode>(node: T): T {
         data[i] = {
           type: el.type,
           props: { ...el.props },
-          key: el.key,
           __vnode: el
         };
+
+        if (Object.hasOwn(el, 'key'))
+          data[i].key = el.key;
+
         break;
       }
       case FreactNodeType.ELEMENT: {
-        const copy = {
+        const copy: FreactElement = {
           type: el.type,
           props: { ...el.props },
-          key: el.key,
           __vnode: el
         };
+
+        if (Object.hasOwn(el, 'key'))
+          copy.key = el.key;
 
         if (el.props.children) {
           copy.props.children = reinstantiate(copy.props.children);
@@ -34,6 +39,10 @@ export function reinstantiate<T extends FreactNode>(node: T): T {
       }
       case FreactNodeType.FRAGMENT: {
         const copy = reinstantiate(el);
+
+        if (Object.hasOwn(el, 'key'))
+          copy.key = el.key;
+
         copy.__vnode = el;
         data[i] = copy;
         break;
