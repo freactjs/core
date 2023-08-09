@@ -17,6 +17,7 @@ interface FreactNodeProps {
   key?: any;
   __domStart?: number;
   __domEnd?: number;
+  __vnode?: FreactElement;
 }
 
 export type FreactFragment = (FreactNode[] & FreactNodeProps);
@@ -25,7 +26,7 @@ export type FreactNode = FreactChild | FreactFragment | boolean | null | undefin
 export type KeyType = bigint | boolean | number | string | symbol | object;
 
 export type PropsWithChildren<T> = T & {
-  children?: FreactNode[];
+  children?: FreactNode;
   key?: KeyType;
 };
 

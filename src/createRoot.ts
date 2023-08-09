@@ -9,6 +9,7 @@ import { switchAndRestoreContext } from "./utils/switchAndRestoreContext";
 import { executeEffects } from "./utils/executeEffects";
 import { MutableRef } from "./hooks/useRef";
 import { getChildrenArray } from "./utils/getChildrenArray";
+import { reinstantiate } from "./utils/reinstantiate";
 
 export class Root {
   #rootEl: HTMLElement;
@@ -172,14 +173,40 @@ export class Root {
               domNode, domIndex
             );
           } else {
-            if (Object.is(currNode, prevNode)) { // skip memoized
-              if (currType === FreactNodeType.COMPONENT || currType === FreactNodeType.FRAGMENT) {
-                domIndex.value = currEl.__domEnd!;
-              } else {
-                domIndex.value++;
-              }
+            // Skip memoized elements
+            if (
+              currType === FreactNodeType.ELEMENT ||
+              currType === FreactNodeType.COMPONENT ||
+              currType === FreactNodeType.FRAGMENT
+            ) {
+              if (Object.is(prevEl.__vnode, currEl.__vnode)) {
+                currEl.__vnode = prevEl.__vnode;
 
-              continue;
+                if (
+                  currType === FreactNodeType.COMPONENT ||
+                  currType === FreactNodeType.FRAGMENT
+                ) {
+                  currEl.__domStart = prevEl.__domStart;
+                  currEl.__domEnd = prevEl.__domEnd;
+                }
+
+                if (currType === FreactNodeType.COMPONENT) {
+                  currEl.__context = prevEl.__context;
+                  currEl.__context!.self.value = currEl;
+                  currEl.__ref = prevEl.__ref;
+                }
+
+                domIndex.value = currType === FreactNodeType.ELEMENT
+                  ? domIndex.value + 1
+                  : prevEl.__domEnd!;
+
+                continue;
+              }
+            } else {
+              if (Object.is(prevNode, currNode)) {
+                domIndex.value++;
+                continue;
+              }
             }
 
             if (currType === FreactNodeType.LITERAL) {
@@ -196,7 +223,7 @@ export class Root {
               this.#pending.delete(prevEl.__context!.self);
 
               switchAndRestoreContext(prevEl.__context!, () => {
-                const newElement = (currEl.type as FC)(currEl.props);
+                const newElement = reinstantiate((currEl.type as FC)(currEl.props));
                 currEl.__domStart = domIndex.value;
                 currEl.__ref = domNode;
 
@@ -249,7 +276,7 @@ export class Root {
               };
 
               switchAndRestoreContext(newCtx, () => {
-                const newElement = (currEl.type as FC)(currEl.props);
+                const newElement = reinstantiate((currEl.type as FC)(currEl.props));
                 currEl.__domStart = domIndex.value;
                 currEl.__ref = domNode;
 
@@ -329,7 +356,7 @@ export class Root {
 
         this.#reconcile(
           h(null, null, item.value),
-          h(null, null, { ...item.value }),
+          reinstantiate(h(null, null, item.value)),
           item.value.__ref!,
           rootIndex
         );
@@ -343,7 +370,7 @@ export class Root {
     context.root = this;
     this.#reconcile(
       h(null, null),
-      h(null, null, node),
+      reinstantiate(h(null, null, node)),
       this.#rootEl
     );
   }
