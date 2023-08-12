@@ -66,6 +66,8 @@ export interface ComponentContext {
   hookData: HookData;
   fx: EffectData[];
   self: { value: FreactElement; };
+  parent: { value: FreactElement; } | null;
+  providerData?: ProviderData;
 }
 
 export interface FreactElement extends FreactNodeProps {

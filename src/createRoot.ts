@@ -1,15 +1,15 @@
-import { FreactElement, FreactNodeType, KeyType, FC, ComponentContext, FreactNode } from "./types";
-import { getNodeKey } from "./utils/getNodeKey";
-import { updateAttribute } from "./utils/updateAttribute";
 import { context } from "./context";
-import { insertNodeAtPosition } from "./utils/insertNodeAtPosition";
 import { h } from "./createElement";
-import { getNodeType } from "./utils/getNodeType";
-import { switchAndRestoreContext } from "./utils/switchAndRestoreContext";
-import { executeEffects } from "./utils/executeEffects";
 import { MutableRef } from "./hooks/useRef";
+import { ComponentContext, FC, FreactElement, FreactNode, FreactNodeType, KeyType } from "./types";
+import { executeEffects } from "./utils/executeEffects";
 import { getChildrenArray } from "./utils/getChildrenArray";
+import { getNodeKey } from "./utils/getNodeKey";
+import { getNodeType } from "./utils/getNodeType";
+import { insertNodeAtPosition } from "./utils/insertNodeAtPosition";
 import { reinstantiate } from "./utils/reinstantiate";
+import { switchAndRestoreContext } from "./utils/switchAndRestoreContext";
+import { updateAttribute } from "./utils/updateAttribute";
 
 export class Root {
   #rootEl: HTMLElement;
@@ -225,6 +225,8 @@ export class Root {
               switchAndRestoreContext(prevEl.__context!, () => {
                 const newElement = reinstantiate((currEl.type as FC)(currEl.props));
                 currEl.__domStart = domIndex.value;
+                currEl.__context = prevEl.__context;
+                currEl.__context!.self.value = currEl;
                 currEl.__ref = domNode;
 
                 this.#reconcile(
@@ -233,9 +235,7 @@ export class Root {
                   domNode, domIndex
                 );
 
-                currEl.__context = prevEl.__context;
                 currEl.__context!.prevTree = newElement;
-                currEl.__context!.self.value = currEl;
                 currEl.__domEnd = domIndex.value;
 
                 executeEffects(currEl.__context!);
@@ -272,12 +272,14 @@ export class Root {
                 fx: [],
                 self: { value: currEl },
                 prevProps: currEl.props,
-                prevTree: null
+                prevTree: null,
+                parent: context.data?.self ?? null
               };
 
               switchAndRestoreContext(newCtx, () => {
                 const newElement = reinstantiate((currEl.type as FC)(currEl.props));
                 currEl.__domStart = domIndex.value;
+                currEl.__context = newCtx;
                 currEl.__ref = domNode;
 
                 this.#reconcile(
@@ -287,7 +289,6 @@ export class Root {
                 );
 
                 currEl.__domEnd = domIndex.value;
-                currEl.__context = newCtx;
                 newCtx.prevTree = newElement;
 
                 executeEffects(currEl.__context);
@@ -339,11 +340,13 @@ export class Root {
     }
   }
 
-  __internalAddPending(component: { value: FreactElement }) {
+  // @ts-ignore
+  private __internalAddPending(component: { value: FreactElement }) {
     this.#pending.add(component);
   }
 
-  __internalUpdate() {
+  // @ts-ignore
+  private __internalUpdate() {
     if (this.#isEnqueued) return;
 
     this.#isEnqueued = true;

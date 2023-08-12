@@ -36,7 +36,7 @@ export function memo<T extends PropsNoKey> (
   let toggle: boolean = false;
   return (props) => {
     toggle = arePropsEqual(
-      context.self?.value.__context?.prevProps ?? {},
+      context.data?.self.value.__context?.prevProps ?? {},
       props
     ) ? toggle : !toggle;
 

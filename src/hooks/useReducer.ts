@@ -33,13 +33,13 @@ export function useReducer<R extends Reducer<any, any>, I>(
 ): [ReducerState<R>, Dispatch<ReducerAction<R>>]
 
 export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: any) {
-  if (!context.root || !context.self)
+  if (!context.root || !context.data)
     throw new Error('Missing context data inside useReducer hook');
 
-  const data = context.data as ReducerData[];
+  const data = context.data.hookData as ReducerData[];
   const index = context.index++;
   const root = context.root;
-  const self = context.self;
+  const self = context.data.self;
 
   if (!Object.hasOwn(data, index)) {
     const dispatch: Dispatch<any> = (action) => {
@@ -47,8 +47,8 @@ export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: a
       if (Object.is(newVal, data[index].val)) return;
 
       data[index].val = newVal;
-      root.__internalAddPending(self);
-      root.__internalUpdate();
+      (root as any).__internalAddPending(self);
+      (root as any).__internalUpdate();
     };
 
     data[index] = {

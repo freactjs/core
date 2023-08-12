@@ -2,7 +2,10 @@ import { context } from "../context";
 import { EffectData } from "../types";
 
 export function useEffect(cb: () => any, deps?: any[]): void {
-  const data = context.data as EffectData[];
+  if (!context.root || !context.data)
+    throw new Error('Missing context data inside useEffect hook');
+
+  const data = context.data.hookData as EffectData[];
   const index = context.index++;
 
   if (!Object.hasOwn(data, index)) {
@@ -11,7 +14,7 @@ export function useEffect(cb: () => any, deps?: any[]): void {
       cb: null,
       deps: deps ?? null
     };
-    context.fx.push(data[index]);
+    context.data.fx.push(data[index]);
   } else {
     let areSame = !!data[index].deps && data[index].deps?.length === deps?.length;
     if (areSame) {

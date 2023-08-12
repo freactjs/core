@@ -1,18 +1,14 @@
 import { Root } from "./createRoot";
-import { ComponentContext, HookData } from "./types";
+import { ComponentContext } from "./types";
 
 export interface GlobalContext {
-  self: ComponentContext['self'] | null;
-  index: number;
-  data: HookData;
-  fx: ComponentContext['fx'];
   root: Root | null;
+  data: ComponentContext | null;
+  index: number;
 }
 
 export const context: GlobalContext = {
-  self: null,
+  root: null,
+  data: null,
   index: 0,
-  data: [],
-  fx: [],
-  root: null
 }
