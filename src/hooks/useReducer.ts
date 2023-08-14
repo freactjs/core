@@ -1,3 +1,4 @@
+import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { ReducerData } from "../types";
 
@@ -34,7 +35,7 @@ export function useReducer<R extends Reducer<any, any>, I>(
 
 export function useReducer(reducer: Reducer<any, any>, initialArg: any, init?: any) {
   if (!context.root || !context.data)
-    throw new Error('Missing context data inside useReducer hook');
+    raise('Missing context data inside useReducer hook');
 
   const data = context.data.hookData as ReducerData[];
   const index = context.index++;

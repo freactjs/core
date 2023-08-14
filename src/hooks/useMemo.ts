@@ -1,9 +1,10 @@
+import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { MemoData } from "../types";
 
 export function useMemo<T>(fn: () => T, deps: any[]): T {
   if (!context.root || !context.data)
-    throw new Error('Missing context data inside useMemo hook');
+    raise('Missing context data inside useMemo hook');
 
   const data = context.data.hookData as MemoData[];
   const index = context.index++;

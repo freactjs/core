@@ -1,10 +1,11 @@
 import { context } from "@/context";
+import { raise } from "@/utils/raise";
 import { Context, ContextValue, ProviderData } from "../createContext";
 import { useEffect } from "./useEffect";
 
 export function useContext<C extends Context<any>>(ctx: C): ContextValue<C> {
   if (!context.root || !context.data)
-    throw new Error('Missing context data inside useContext hook');
+    raise('Missing context data inside useContext hook');
 
   const data = context.data.hookData as ProviderData[];
   const index = context.index++;
@@ -21,7 +22,7 @@ export function useContext<C extends Context<any>>(ctx: C): ContextValue<C> {
 
     if (curr) {
       if (!curr.__context?.providerData)
-        throw new Error("Provider doesn't contain ProviderData. How?");
+        raise("Provider doesn't contain ProviderData. How?");
 
       curr.__context.providerData.subs.add(self);
       data[index] = curr.__context.providerData;

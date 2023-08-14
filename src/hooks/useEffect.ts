@@ -1,9 +1,10 @@
+import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { EffectData } from "../types";
 
 export function useEffect(cb: () => any, deps?: any[]): void {
   if (!context.root || !context.data)
-    throw new Error('Missing context data inside useEffect hook');
+    raise('Missing context data inside useEffect hook');
 
   const data = context.data.hookData as EffectData[];
   const index = context.index++;

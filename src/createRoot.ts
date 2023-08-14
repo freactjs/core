@@ -7,6 +7,7 @@ import { getChildrenArray } from "./utils/getChildrenArray";
 import { getNodeKey } from "./utils/getNodeKey";
 import { getNodeType } from "./utils/getNodeType";
 import { insertNodeAtPosition } from "./utils/insertNodeAtPosition";
+import { raise } from "./utils/raise";
 import { reinstantiate } from "./utils/reinstantiate";
 import { switchAndRestoreContext } from "./utils/switchAndRestoreContext";
 import { updateAttribute } from "./utils/updateAttribute";
@@ -27,6 +28,12 @@ export class Root {
     domNode: HTMLElement,
     parentDomIndex?: { value: number; }
   ) {
+    // strip empty props
+    for (const key of Object.keys(curr.props)) {
+      if (curr.props[key] === undefined || curr.props[key] === null)
+        delete curr.props[key];
+    }
+
     const attrs = new Set([...Object.keys(curr.props), ...Object.keys(prev.props)]);
     for (const attr of attrs) {
       if (attr === 'children') continue;
@@ -381,6 +388,6 @@ export class Root {
 
 export function createRoot(rootSelector: string) {
   const rootEl = document.querySelector<HTMLElement>(rootSelector);
-  if (!rootEl) throw new Error("Root element doesn't exist");
+  if (!rootEl) raise("Root element doesn't exist");
   return new Root(rootEl);
 }

@@ -1,3 +1,4 @@
+import { raise } from "@/utils/raise";
 import { context } from "../context";
 
 export interface MutableRef<T> {
@@ -13,7 +14,7 @@ export function useRef<T>(initialValue: T | null): Ref<T>
 export function useRef<T = undefined>(initialValue?: undefined): MutableRef<T | undefined>
 export function useRef(initialValue: any): MutableRef<any> {
   if (!context.root || !context.data)
-    throw new Error('Missing context data inside useRef hook');
+    raise('Missing context data inside useRef hook');
 
   const data = context.data.hookData as MutableRef<any>[];
   const index = context.index++;
