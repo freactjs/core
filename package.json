@@ -39,7 +39,6 @@
   "devDependencies": {
     "@types/node": "^20.2.3",
     "rimraf": "^5.0.1",
-    "terser": "^5.17.5",
     "typescript": "^5.0.2",
     "vite": "^4.3.2"
   }
