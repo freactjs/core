@@ -280,7 +280,8 @@ export class Root {
                 self: { value: currEl },
                 prevProps: currEl.props,
                 prevTree: null,
-                parent: context.data?.self ?? null
+                parent: context.data?.self ?? null,
+                depth: (context.data?.depth ?? -1) + 1
               };
 
               switchAndRestoreContext(newCtx, () => {
@@ -308,7 +309,7 @@ export class Root {
           if (prevType === FreactNodeType.FRAGMENT) {
             this.#reconcile(
               h(null, null, ...(prevNode as [])),
-              h(null, null, currNode),
+              h(null, null),
               domNode, domIndex
             );
           } else if (prevType === FreactNodeType.COMPONENT) {
@@ -316,7 +317,7 @@ export class Root {
 
             this.#reconcile(
               h(null, null, prevEl.__context!.prevTree),
-              h(null, null, currNode),
+              h(null, null),
               domNode, domIndex
             );
 
@@ -345,6 +346,28 @@ export class Root {
         }
       }
     }
+
+    // unmount unused keyed nodes
+    if (keyNodeMap.size < 1) return;
+    const tempDiv = document.createElement('div');
+
+    for (const [_, [vnode, nodes]] of keyNodeMap) {
+      for (let i = 0; i < nodes.length; i++) {
+        insertNodeAtPosition(tempDiv, nodes[i], i);
+      }
+
+      if (
+        typeof vnode === 'object' &&
+        vnode !== null &&
+        Object.hasOwn(vnode, 'key')
+      ) delete vnode.key;
+
+      this.#reconcile(
+        h(null, null, vnode),
+        h(null, null),
+        tempDiv
+      );
+    }
   }
 
   // @ts-ignore
@@ -360,14 +383,24 @@ export class Root {
     requestIdleCallback(() => {
       context.root = this;
 
-      for (const item of this.#pending) {
-        const rootIndex = { value: item.value.__domStart! };
-        this.#pending.delete(item);
+      while (this.#pending.size > 0) {
+        let minComp: { value: FreactElement; };
+        let minDepth = Infinity;
+
+        for (const item of this.#pending) {
+          if (item.value.__context!.depth < minDepth) {
+            minDepth = item.value.__context!.depth;
+            minComp = item;
+          }
+        }
+
+        const rootIndex = { value: minComp!.value.__domStart! };
+        this.#pending.delete(minComp!);
 
         this.#reconcile(
-          h(null, null, item.value),
-          reinstantiate(h(null, null, item.value)),
-          item.value.__ref!,
+          h(null, null, minComp!.value),
+          reinstantiate(h(null, null, minComp!.value)),
+          minComp!.value.__ref!,
           rootIndex
         );
       }

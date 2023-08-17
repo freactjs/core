@@ -67,6 +67,7 @@ export interface ComponentContext {
   fx: EffectData[];
   self: { value: FreactElement; };
   parent: { value: FreactElement; } | null;
+  depth: number;
   providerData?: ProviderData;
 }
 
