@@ -1,4 +1,4 @@
-import { FreactElement, FreactNode, FreactNodeType } from "@/types";
+import { FreactElement, FreactNode, FreactNodeType } from "../types";
 import { getNodeType } from "./getNodeType";
 
 export function reinstantiate<T extends FreactNode>(node: T): T {

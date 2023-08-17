@@ -1,6 +1,6 @@
-import { context } from "@/context";
-import { raise } from "@/utils/raise";
+import { context } from "../context";
 import { Context, ContextValue, ProviderData } from "../createContext";
+import { raise } from "../utils/raise";
 import { useEffect } from "./useEffect";
 
 export function useContext<C extends Context<any>>(ctx: C): ContextValue<C> {

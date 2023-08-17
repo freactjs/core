@@ -1,6 +1,6 @@
-import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { MemoData } from "../types";
+import { raise } from "../utils/raise";
 
 export function useMemo<T>(fn: () => T, deps: any[]): T {
   if (!context.root || !context.data)

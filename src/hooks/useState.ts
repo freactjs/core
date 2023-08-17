@@ -1,6 +1,6 @@
-import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { StateData } from "../types";
+import { raise } from "../utils/raise";
 
 export type StateSetter<T> = (value: T | ((oldValue: T) => T)) => void;
 

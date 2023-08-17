@@ -1,6 +1,6 @@
-import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { ReducerData } from "../types";
+import { raise } from "../utils/raise";
 
 type ReducerNoAction<S> = (state: S) => S;
 type ReducerNoActionState<R> = R extends ReducerNoAction<infer S> ? S : any;

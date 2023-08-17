@@ -1,5 +1,5 @@
-import { context } from "@/context";
-import { raise } from "@/utils/raise";
+import { context } from "../context";
+import { raise } from "../utils/raise";
 import { useMemo } from "./useMemo";
 
 export function useCallback(fn: (...args: any[]) => any, deps: any[]) {

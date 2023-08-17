@@ -1,6 +1,6 @@
-import { raise } from "@/utils/raise";
 import { context } from "../context";
 import { EffectData } from "../types";
+import { raise } from "../utils/raise";
 
 export function useEffect(cb: () => any, deps?: any[]): void {
   if (!context.root || !context.data)
