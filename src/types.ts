@@ -8,7 +8,7 @@ export interface PropsNoKey {
   key?: never;
 }
 
-export type FC<T extends PropsNoKey = {}> = FunctionalComponent<T>;
+export type FC<T extends PropsNoKey = {}> = FunctionComponent<T>;
 
 type FreactText = string | number;
 type FreactChild = FreactElement | FreactText;
@@ -30,7 +30,7 @@ export type PropsWithChildren<T> = T & {
   key?: KeyType;
 };
 
-export interface FunctionalComponent<T extends PropsNoKey = {}> {
+export interface FunctionComponent<T extends PropsNoKey = {}> {
   (props: T): FreactElement;
 }
 

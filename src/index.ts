@@ -13,7 +13,7 @@ export { useState } from "./hooks/useState";
 export { createRoot } from "./createRoot";
 export { h } from './createElement';
 
-export type { FC, FunctionalComponent, FreactNode, FreactElement } from './types';
+export type { FC, FunctionComponent, FreactNode, FreactElement } from './types';
 export type { Context } from './createContext';
 export type { Ref, MutableRef } from './hooks/useRef';
 export type { Dispatch } from './hooks/useReducer';
