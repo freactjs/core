@@ -1,9 +1,9 @@
 {
   "name": "@freact/core",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "author": "Fry",
   "license": "MIT",
-  "description": "TODO",
+  "description": "Minimal React re-implementation in 3kB",
   "type": "module",
   "files": [
     "dist"
